@@ -12,12 +12,12 @@ int WindowStartX = 1000, WindowStartY = 300, WindowMargin = 10;
 float Scale = 1; // Windows settings
 
 
-float alpha = 2;
+float alpha = 10;
 
-int Dx_min = -10;
-int Dx_max = 10;
-int Dy_min = -5;
-int Dy_max = 5;
+int Dx_min = 0;
+int Dx_max = 50;
+int Dy_min = 0;
+int Dy_max = 0;
 
 int Dx_size = Dx_max - Dx_min + 1;
 int Dy_size = Dy_max - Dy_min + 1;
@@ -27,8 +27,8 @@ int main()
 
 
     ////////////// Img ////////////////
-    Mat imL = imread("imgs/r1.png", IMREAD_GRAYSCALE);
-    Mat imR = imread("imgs/r2.png", IMREAD_GRAYSCALE);
+    Mat imL = imread("imgs/c1.png", IMREAD_GRAYSCALE);
+    Mat imR = imread("imgs/c2.png", IMREAD_GRAYSCALE);
     imL.convertTo(imL, CV_32F);
     imR.convertTo(imR, CV_32F);
 
@@ -118,7 +118,7 @@ int main()
         {
             for (int d = 0; d < D_size; d++)
             {
-                B.at<float>(y, x, d) = Bottom(y, x, d, B, H, G, D);
+                B.at<float>(y, x, d) = Bottom(y, x, d, B, H, G, D, im_height);
             }
         }
     }
@@ -139,10 +139,7 @@ int main()
 
     ////////////// Clr ////////////////
     cout << ">> Clr..." << endl;
-    Mat Red = Mat(im_height, im_width, CV_32F, Scalar(0));
-    Mat Green = Mat(im_height, im_width, CV_32F, Scalar(0));
-    Mat Blue = Mat(im_height, im_width, CV_32F, Scalar(0));
-    Mat Yellow = Mat(im_height, im_width, CV_32F, Scalar(0));
+    Mat Bw = Mat(im_height, im_width, CV_32F, Scalar(0));
 
     Mat Clr = Mat(im_height, im_width, CV_8UC3, Scalar(0, 0, 0));
 
@@ -152,47 +149,38 @@ int main()
         {
 
             int best_d = Res.at<float>(y, x);
-            //cout << "best_d: " << best_d << endl;
             int dy = D.at<int>(best_d, 0);
-            //cout << "dy: " << dy << endl;
             int dx = D.at<int>(best_d, 1);
-            //cout << "dx: " <<  dx << endl;
-            //cout << (dx >= 0) << endl;
+
+            int maxD = max(Dx_size, Dy_size);
+            Bw.at<float>(y, x) = sqrt(dy * dy + dx * dx) * 255 / maxD;
 
             if (dx >= 0)
             {
-                Red.at<float>(y, x) = dx * 10;
                 Clr.at<Vec3b>(y, x)[0] = abs(dx) * 255/ Dx_size;
             }
             else
             {
-                Blue.at<float>(y, x) = abs(dx) * 10;
                 Clr.at<Vec3b>(y, x)[2] = abs(dx) * 255 / Dx_size;
             }
 
             if (dy >= 0)
             {
-                Green.at<float>(y, x) = dy * 10;
                 Clr.at<Vec3b>(y, x)[1] = abs(dy) * 255 / Dy_size;
             }
             else
             {
-                Yellow.at<float>(y, x) = abs(dy) * 10;
-                Clr.at<Vec3b>(y, x)[0] = abs(dy) * 255 / Dy_size;
-                Clr.at<Vec3b>(y, x)[1] = abs(dy) * 255 / Dy_size;
+                Clr.at<Vec3b>(y, x)[0] = abs(dy) * 122 / Dy_size;
+                Clr.at<Vec3b>(y, x)[1] = abs(dy) * 122 / Dy_size;
             }
 
         }
     }
 
     Res.convertTo(Res, CV_8U);
+    Bw.convertTo(Bw, CV_8U);
 
-    Red.convertTo(Red, CV_8U);
-    Green.convertTo(Green, CV_8U);
-    Blue.convertTo(Blue, CV_8U);
-    Yellow.convertTo(Yellow, CV_8U);
-
-    imshow("Res", Res);
+    imshow("BW", Bw);
     /*imshow("R", Red);
     imshow("G", Green);
     imshow("B", Blue);

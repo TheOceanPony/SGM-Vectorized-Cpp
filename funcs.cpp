@@ -131,7 +131,7 @@ float Up(int y, int x, int d, Mat& U, Mat H, Mat G, Mat D)
 {
 	int D_size = D.rows;
 
-	if (x == 0)
+	if (y == 0)
 	{
 		return 0;
 	}
@@ -142,7 +142,7 @@ float Up(int y, int x, int d, Mat& U, Mat H, Mat G, Mat D)
 
 		for (int d2 = 0; d2 < D_size; d2++)
 		{
-			foo = U.at<float>(y, x - 1, d2) + H.at<float>(y, x - 1, d2) + G.at<float>(d, d2);
+			foo = U.at<float>(y-1, x, d2) + H.at<float>(y-1, x, d2) + G.at<float>(d, d2);
 			if (foo < minup)
 			{
 				minup = foo;
@@ -184,12 +184,11 @@ float Right(int y, int x, int d, Mat& R, Mat H, Mat G, Mat D)
 
 
 ///////////// D ///////////////
-float Bottom(int y, int x, int d, Mat& B, Mat H, Mat G, Mat D)
+float Bottom(int y, int x, int d, Mat& B, Mat H, Mat G, Mat D, int im_height)
 {
-	int im_width = B.cols;
 	int D_size = D.rows;
 
-	if (x == im_width - 1)
+	if (y == im_height - 1)
 	{
 		return 0;
 	}
@@ -200,7 +199,7 @@ float Bottom(int y, int x, int d, Mat& B, Mat H, Mat G, Mat D)
 
 		for (int d2 = 0; d2 < D_size; d2++)
 		{
-			foo = B.at<float>(y, x + 1, d2) + H.at<float>(y, x + 1, d2) + G.at<float>(d, d2);
+			foo = B.at<float>(y+1, x, d2) + H.at<float>(y+1, x, d2) + G.at<float>(d, d2);
 			if (foo < minbottom)
 			{
 				minbottom = foo;

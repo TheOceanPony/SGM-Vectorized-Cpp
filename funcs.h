@@ -14,6 +14,6 @@ void initG(Mat& G, Mat D, float alpha);
 float Left(int y, int x, int d, Mat& L, Mat H, Mat G, Mat D);
 float Right(int y, int x, int d, Mat& R, Mat H, Mat G, Mat D);
 float Up(int y, int x, int d, Mat& U, Mat H, Mat G, Mat D);
-float Bottom(int y, int x, int d, Mat& B, Mat H, Mat G, Mat D);
+float Bottom(int y, int x, int d, Mat& B, Mat H, Mat G, Mat D, int im_height);
 
 void reconstruct(Mat& Res, Mat L, Mat R, Mat U, Mat B, Mat H, Mat G, Mat D);
